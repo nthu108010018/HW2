@@ -7,10 +7,12 @@ uLCD_4DGL uLCD(D1, D0, D2); // serial tx, serial rx, reset pin;
 BusIn selections(D13, D12, D11);
 DigitalOut out(D10);
 AnalogOut Aout(PA_4);
-void wave_tri(AnalogOut &aout, int freq);
-int main()
+AnalogIn Ain(A0);
+void wave_tri(AnalogOut &aout, AnalogIn &ain, int freq, float adcData[], int sample);
 
-{
+float ADCdata[128];
+
+int main(){
     
     uLCD.printf("\nHello uLCD World\n");
     
@@ -53,6 +55,7 @@ int main()
               ThisThread::sleep_for(10ms);
               break;
             case 0x2 : flag =1 ;break;
+
             case 0x1 : // up
               if(i <= 0){
                   uLCD.printf("Invalid Input2\n");
@@ -77,24 +80,13 @@ int main()
               ThisThread::sleep_for(10ms);
               break;
         }
-    
-        /*for(unsigned int j = 0; j<3; j++){
-            if(i == j){
-                uLCD.color(RED);
-                uLCD.printf(options[j]);
-                uLCD.printf("\n");
-                uLCD.color(GREEN);
-            }
-            else{
-                uLCD.printf(options[j]);
-                uLCD.printf("\n");
-            }
-        }*/
+       
         if(flag ==1){
-            uLCD.printf("fuck you\n");
-            wave_tri(Aout, 1.0);
+            wave_tri(Aout, Ain, 1, ADCdata, 128);
             break;
         }
+        
     }
+    
 
-}
+}   
