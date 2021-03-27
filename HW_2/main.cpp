@@ -8,26 +8,14 @@ BusIn selections(D13, D12, D11);
 DigitalOut out(D10);
 AnalogOut Aout(PA_4);
 AnalogIn Ain(A0);
-void wave_tri(AnalogOut &aout, AnalogIn &ain, int freq, float adcData[], int sample, int steps);
-/*void menu(char **options, int i){
-    uLCD.cls();
-    for(int j = 0; j<3; j++){
-        if(i == j){
-            uLCD.color(RED);
-            uLCD.printf(options[j]);
-            uLCD.printf("\n");
-            uLCD.color(GREEN);
-        }
-        else{
-            uLCD.printf(options[j]);
-            uLCD.printf("\n");
-         }
-    }
-}*/
-float ADCdata[128];
+void wave_tri(AnalogOut &aout, AnalogIn &ain, float adcData[], int sample, int steps);
+
+float ADCdata[1000];
 
 int main(){
-    
+    for(int j = 0; j<1000; j++){
+        ADCdata[j] = 0;
+    }
     uLCD.printf("\nHello uLCD World\n");
     
 
@@ -56,7 +44,21 @@ int main(){
         switch(selections){
             case 0x4 : // down
               if(i >= 2){
-                  uLCD.printf("Invalid Input1\n");
+                  i=0;
+                  uLCD.cls();
+                  for(int j = 0; j<3; j++){
+                      if(i == j){
+                          uLCD.color(RED);
+                          uLCD.printf(options[j]);
+                          uLCD.printf("\n");
+                          uLCD.color(GREEN);
+                        }
+                      else{
+                          uLCD.printf(options[j]);
+                          uLCD.printf("\n");
+                        }
+                    }
+
               } 
               else{
                   i++;
@@ -81,8 +83,21 @@ int main(){
 
             case 0x1 : // up
               if(i <= 0){
-                  uLCD.printf("Invalid Input2\n");
-                  i = 0;
+                  
+                  i = 2;
+                  uLCD.cls();
+                  for(int j = 0; j<3; j++){
+                      if(i == j){
+                          uLCD.color(RED);
+                          uLCD.printf(options[j]);
+                          uLCD.printf("\n");
+                          uLCD.color(GREEN);
+                        }
+                      else{
+                          uLCD.printf(options[j]);
+                          uLCD.printf("\n");
+                        }
+                    }
               } 
               else{
                   i--;
@@ -108,13 +123,13 @@ int main(){
             uLCD.cls();
             uLCD.printf(options[i]);
             if(i == 0){
-                wave_tri(Aout, Ain, 500, ADCdata, 128, 200);//1333.33Hz
+                wave_tri(Aout, Ain, ADCdata, 128, 20000);
             }
             else if(i == 1){
-                wave_tri(Aout, Ain, 500, ADCdata, 128, 100);//697Hz
+                wave_tri(Aout, Ain,  ADCdata, 128, 1000);
             }
             else if(i == 2){
-                wave_tri(Aout, Ain, 500, ADCdata, 128, 150);
+                wave_tri(Aout, Ain,  ADCdata, 128, 5000);
             }
             
             break;
