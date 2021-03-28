@@ -14,11 +14,11 @@ DigitalOut out(D10);
 AnalogOut Aout(PA_4);
 AnalogIn Ain(A0);
 
-void sampling(int cfreq);
-void wave_gen(AnalogOut &aout, AnalogIn &ain, float adcData[], int sample, int steps);
+void sampling(int rate);
+void wave_gen(AnalogOut &aout, AnalogIn &ain, float adcData[], int steps);
 void menu(int i);
 
-float ADCdata[1000];
+float ADCdata[10000] = {0};
 
 int main(){
     uLCD.printf("\nHello uLCD World\n");
@@ -59,20 +59,18 @@ int main(){
               break;
         }
         if(flag ==1){
-            uLCD.cls();
-            uLCD.printf("Generating");
-            queue.call(&sampling, 500);
+            queue.call(&sampling, 820);
             Thread eventThread(osPriorityNormal);
-            eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
+            eventThread.start(callback(&queue,&EventQueue::dispatch_forever));
             
             if(i == 0){
-                wave_gen(Aout, Ain, ADCdata, 128, 1000);
+                wave_gen(Aout, Ain, ADCdata,  100); // 135Hz
             }
             else if(i == 1){
-                wave_gen(Aout, Ain,  ADCdata, 128, 2000);
+                wave_gen(Aout, Ain,  ADCdata, 200);//  270Hz
             }
             else if(i == 2){
-                wave_gen(Aout, Ain,  ADCdata, 128, 5000);
+                wave_gen(Aout, Ain,  ADCdata, 300);//  410Hz
             }
         }
     }
@@ -81,8 +79,8 @@ int main(){
 
 
 void menu(int i){
-    const char *options[3] = { "frequency_1", "frequency_2", 
-                             "frequency_3" };
+    const char *options[3] = { "135Hz", "270Hz", 
+                             "410Hz" };
     for(int j = 0; j<3; j++){
         if(i == j){
             uLCD.color(RED);
@@ -97,33 +95,35 @@ void menu(int i){
     }
 }
 
-void wave_gen(AnalogOut &aout, AnalogIn &ain, float adcData[], int sample, int steps){
+void wave_gen(AnalogOut &aout, AnalogIn &ain, float adcData[],  int steps){
     
     
     while(1){
         int i =0;
         while(i<90){
             aout = 0.01*i;
-            i = i+0.001*steps;
+            i = i+0.01*steps;
+            wait_us(50);
         }
         while(i>0){
             aout = 0.01*i;
-            i = i-0.009*steps;
+            i = i-0.09*steps;
+            wait_us(50);
         }
     }
    
 }
 
 
-void sampling(int cfreq){
+void sampling(int rate){
     while(1){
         for(int i=0; i<1000; i++){
             ADCdata[i] = Ain*3.3;
-            ThisThread::sleep_for(1000ms/cfreq);
+            ThisThread::sleep_for(1000ms/rate);
         }
         for(int i=0; i<1000;i++){
             printf("%f\r\n", ADCdata[i]);
         }
-        ThisThread::sleep_for(cfreq*10ms);
+        ThisThread::sleep_for(rate*10ms);
     }
 }
