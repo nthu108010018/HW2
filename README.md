@@ -1,1 +1,8 @@
 # HW2
+用uLCD.printf以及switch還有for寫出顯示於螢幕的目錄
+用一個pin做DigitalOut輸出到設計的控制電路 用3個做DigitalIN配合Button去讀取輸入的訊號分別為何
+在確認要輸出的三角波的頻率以後，去執行輸出波以及讀取波的function (用一個int flag來確定是否執行)
+至於wave 的輸出以及讀取 分別是經由AnalogOut以及AnalogIn去實作
+輸出時使用while裡面配合for迴圈去達到目標波型，在確認濾波器的cutoff frequency以後以wait_us以及i = i+ steps 來控制達到目標
+用thread加上EventQueue去做同時讀取寫字串，因為如果直接在同個迴圈進行, printf的動作會消耗太多時間 嚴重影響頻率
+最後直接用python去讀取波，並且利用套件直接做
